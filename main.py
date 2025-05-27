@@ -5,27 +5,29 @@ from fastapi.exceptions import RequestValidationError
 from PIL import Image
 import pytesseract
 import io
+import platform
 
 app = FastAPI()
 
-# Set this for Windows systems if Tesseract is not in PATH
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\\Tesseract-OCR\tesseract.exe'
+# Set Tesseract command based on OS
+if platform.system() == "Windows":
+    pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+else:
+    # On Linux (Render), Tesseract should be in PATH by default, so no need to set explicitly
+    # But you can set it explicitly if needed, e.g.:
+    # pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
+    pass
 
 @app.post("/extract-text/")
 async def extract_text_from_image(file: UploadFile = File(...)):
     try:
-        # Read image file
         image_data = await file.read()
         image = Image.open(io.BytesIO(image_data))
-
-        # Extract text using pytesseract
         text = pytesseract.image_to_string(image)
-
         return {"filename": file.filename, "extracted_text": text}
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
-   
-   
+
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     return JSONResponse(
