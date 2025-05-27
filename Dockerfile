@@ -11,8 +11,8 @@ RUN apt-get update && apt-get install -y tesseract-ocr libtesseract-dev
 # Install python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose port (optional, mostly for local testing)
+# Expose port (for local use; Render ignores this)
 EXPOSE 8000
 
-# Run the app (use the environment-provided PORT)
-CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT}"]
+# Run the app with shell so $PORT expands
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port $PORT"]
