@@ -5,6 +5,3 @@ services:
     plan: free
     dockerfilePath: ./Dockerfile
     region: asia-southeast1
-    envVars:
-      - key: PORT
-        value: 8000
