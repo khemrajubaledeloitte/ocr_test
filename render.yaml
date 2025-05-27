@@ -1,9 +1,18 @@
-services:
-  - type: web
-    name: ocr-app
-    env: python
-    plan: free
-    buildCommand: |
-      apt-get update && apt-get install -y tesseract-ocr
-      pip install -r requirements.txt
-    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Copy source code
+COPY . /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y tesseract-ocr libtesseract-dev
+
+# Install python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Expose port (optional, mostly for local testing)
+EXPOSE 8000
+
+# Run the app
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
