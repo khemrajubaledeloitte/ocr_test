@@ -23,7 +23,13 @@ app.add_middleware(
 )
 
 # Initialize PaddleOCR once
-ocr_paddle = PaddleOCR(use_angle_cls=True, lang='en')
+ocr_paddle = ocr_paddle = PaddleOCR(
+    use_angle_cls=False,   # <--- turn this off to save RAM
+    lang='en',
+    det_db_box_thresh=0.5,  # optional: increase this to reduce box count
+    rec_algorithm='CRNN',   # optional: lighter model
+)
+
 
 # Set this for Windows systems if Tesseract is not in PATH
 
