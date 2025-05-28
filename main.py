@@ -26,7 +26,6 @@ app.add_middleware(
 ocr_paddle = PaddleOCR(use_angle_cls=True, lang='en')
 
 # Set this for Windows systems if Tesseract is not in PATH
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\\Tesseract-OCR\tesseract.exe'
 
 @app.post("/extract-text/")
 async def extract_text_from_image(file: UploadFile = File(...)):
